@@ -1,0 +1,1 @@
+# yadro-game-club-app
