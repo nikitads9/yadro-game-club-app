@@ -1,0 +1,43 @@
+name: stats
+
+on:
+    push:
+      branches: [ main]
+    pull_request:
+      branches: [ main ]
+      
+jobs:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      
+    cloc:
+      runs-on: ubuntu-latest
+      name: A job to count the lines of code.
+      permissions:
+        id-token: write 
+        contents: write
+      steps:
+        - name: Count lines
+          uses: actions/checkout@v4
+        - name: Get the lines of code.
+          id: cloc
+          uses: djdefi/cloc-action@6
+          with:
+            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE --exclude-ext=md --json --no-autogen .
+
+        - name: Get array length
+          id: getlength
+          env:
+            labels: ${{ toJson(steps.cloc.outputs)}}
+          run: |
+            echo “$labels”
+            LL=$(echo $labels | jq '. | length' )
+            echo "::set-output name=Label_length::$LL"
+        - name: Write Badge
+          uses: action-badges/core@0.3.0
+          with:
+            file-name: lines.svg
+            github-token: "${{ secrets.GITHUB_TOKEN }}"
+            badge-branch: badges
+            label: code lines
+            message: ${{ toJson(steps.cloc.outputs)[steps.getlength.Label_length].code }}
+            message-color: blue
