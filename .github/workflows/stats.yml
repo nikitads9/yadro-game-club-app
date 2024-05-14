@@ -7,7 +7,6 @@ on:
       branches: [ main ]
       
 jobs:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       
     cloc:
       runs-on: ubuntu-latest
@@ -22,16 +21,7 @@ jobs:
           id: cloc
           uses: djdefi/cloc-action@6
           with:
-            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE --exclude-ext=md --json --no-autogen .
-
-        - name: Get array length
-          id: getlength
-          env:
-            labels: ${{ toJson(steps.cloc.outputs)}}
-          run: |
-            echo “$labels”
-            LL=$(echo $labels | jq '. | length' )
-            echo "::set-output name=Label_length::$LL"
+            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --json --no-autogen .
         - name: Write Badge
           uses: action-badges/core@0.3.0
           with:
@@ -39,5 +29,5 @@ jobs:
             github-token: "${{ secrets.GITHUB_TOKEN }}"
             badge-branch: badges
             label: code lines
-            message: ${{ toJson(steps.cloc.outputs)[steps.getlength.Label_length].code }}
+            message: ${{ toJson(steps.cloc.outputs)[1].code}}
             message-color: blue
