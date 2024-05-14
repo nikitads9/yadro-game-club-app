@@ -16,6 +16,21 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+# IDE directories
+.vscode/
+# Generated folders
+.sequence
+# Coverage results
+coverage/profile
+coverage/integration/*
+!coverage/integration/.gitkeep
+coverage/unit/*
+!coverage/unit/.gitkeep
+# Binaries directories
+bin/
+# Environment files
+*.env
+
 
 # Go workspace file
 go.work
