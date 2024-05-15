@@ -21,10 +21,10 @@ jobs:
           id: cloc
           uses: djdefi/cloc-action@6
           with:
-            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out=cloc.json --no-autogen . 
+            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out=cloc.txt --no-autogen . 
 
-        - name: Check
-          run: echo "CODE_LINES=$(grep -m 1 -E  'Go' cloc.json | grep -Eo '[0-9]+$')" >> $GITHUB_ENV
+        - name: Export lines count
+          run: echo "CODE_LINES=$(grep -m 1 -E  'Go' cloc.txt | grep -Eo '[0-9]+$')" >> $GITHUB_ENV
         - name: Write Badge
           uses: action-badges/core@0.3.0
           
