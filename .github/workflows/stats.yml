@@ -24,13 +24,14 @@ jobs:
             options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out=cloc.json --no-autogen . 
 
         - name: Check
-          run: grep -m 1 -E  'Go' cloc.json | grep -Eo '[0-9]+$'
+          run: echo "CODE_LINES=$(grep -m 1 -E  'Go' cloc.json | grep -Eo '[0-9]+$')" >> $GITHUB_ENV
         - name: Write Badge
           uses: action-badges/core@0.3.0
+          
           with:
             file-name: lines.svg
             github-token: "${{ secrets.GITHUB_TOKEN }}"
             badge-branch: badges
             label: code lines
-            message: grep -m 1 -E  'Go' cloc.json | grep -Eo '[0-9]+$'
+            message: ${{ env.CODE_LINES }}
             message-color: blue
