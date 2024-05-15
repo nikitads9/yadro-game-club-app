@@ -11,7 +11,7 @@ import (
 var path string
 
 func init() {
-	flag.StringVar(&path, "path", "./testdata/test.txt", "путь к файлу с исходными данными по итогам дня")
+	flag.StringVar(&path, "path", "C:\\Users\\swnik\\Desktop\\projects\\yadro-game-club-app\\testdata\\test2.txt", "путь к файлу с исходными данными по итогам дня")
 }
 
 func main() {

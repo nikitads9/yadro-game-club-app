@@ -80,8 +80,8 @@ func processInboundEvents(line string, moment time.Time, eventID string, client 
 
 		// если клиент ожидает, несмотря на то, что есть свободные столы
 		var vacant bool
-		for _, val := range Computers {
-			if !val.Occupied {
+		for _, computer := range Computers {
+			if !computer.Occupied {
 				vacant = true
 			}
 		}
@@ -102,29 +102,35 @@ func processInboundEvents(line string, moment time.Time, eventID string, client 
 			return
 		}
 
+		player, playing := Players[client]
+
 		delete(Customers, client)
 
-		if len(Queue) > 0 {
+		if playing && len(Queue) > 0 {
 			// первый в очереди отмечается как работающий за компьютером ушедшего
-			Players[Queue[0]] = Players[client]
+			Players[Queue[0]] = player
 			// сеанс ушедшего игрока завершается и подсчитывается его время и чек
-			Computers[*Players[client]].SessionEnd, Computers[*Players[client]].Occupied = moment, false
-			Computers[*Players[client]].UseTime += moment.Sub(Computers[*Players[client]].SessionStart)
-			Computers[*Players[client]].Revenue = calculateRevenue(Computers[*Players[client]])
-			format.Event(moment, 12, Queue[0], *Players[client])
+			Computers[*player].SessionEnd, Computers[*player].Occupied = moment, false
+			Computers[*player].UseTime += moment.Sub(Computers[*player].SessionStart)
+			Computers[*player].Revenue = calculateRevenue(Computers[*player])
+			format.Event(moment, 12, Queue[0], *player)
 			//начинается сеанс первого игрока из очереди
-			Computers[*Players[client]].SessionStart, Computers[*Players[client]].Occupied = moment, true
+			Computers[*player].SessionStart, Computers[*player].Occupied = moment, true
 			// ушедший удаляется из списка активных клиентов, покинувший очередь удаляется из очереди
 			delete(Players, client)
 			delete(Queuers, Queue[0])
+			delete(Customers, client)
 			//очередь подрезается
 			Queue = Queue[1:]
 			return
 		}
-		// сеанс ушедшего игрока завершается и подсчитывается его время и чек, он удаляется из списка активных игроков
-		Computers[*Players[client]].SessionEnd, Computers[*Players[client]].Occupied = moment, false
-		Computers[*Players[client]].UseTime += moment.Sub(Computers[*Players[client]].SessionStart)
-		Computers[*Players[client]].Revenue += calculateRevenue(Computers[*Players[client]])
-		delete(Players, client)
+
+		if playing {
+			// сеанс ушедшего игрока завершается и подсчитывается его время и чек, он удаляется из списка активных игроков
+			Computers[*player].SessionEnd, Computers[*player].Occupied = moment, false
+			Computers[*player].UseTime += moment.Sub(Computers[*player].SessionStart)
+			Computers[*player].Revenue += calculateRevenue(Computers[*player])
+			delete(Players, client)
+		}
 	}
 }

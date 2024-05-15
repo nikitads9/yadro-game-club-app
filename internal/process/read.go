@@ -135,10 +135,10 @@ func ReadLogs(file *os.File) {
 	}
 
 	// Все игроки, которые остались на момент закрытия должны освободить места и быть учтены в выручке
-	for key, val := range Players {
-		Computers[*val].SessionEnd, Computers[*val].Occupied = closingTime, false
-		Computers[*val].Revenue += calculateRevenue(Computers[*val])
-		Computers[*val].UseTime += closingTime.Sub(Computers[*val].SessionStart)
+	for key, player := range Players {
+		Computers[*player].SessionEnd, Computers[*player].Occupied = closingTime, false
+		Computers[*player].Revenue += calculateRevenue(Computers[*player])
+		Computers[*player].UseTime += closingTime.Sub(Computers[*player].SessionStart)
 		format.Event(closingTime, 11, key)
 	}
 
