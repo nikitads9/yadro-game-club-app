@@ -21,7 +21,7 @@ jobs:
           id: cloc
           uses: djdefi/cloc-action@6
           with:
-            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out="$GITHUB_OUTPUT" --no-autogen . 
+            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out=cloc.json --no-autogen . 
 
         - name: Check
           run: echo ${{ toJson(steps.cloc.outputs) }}
@@ -32,5 +32,5 @@ jobs:
             github-token: "${{ secrets.GITHUB_TOKEN }}"
             badge-branch: badges
             label: code lines
-            message: ${{ toJson(steps.cloc.outputs)[1].code }}
+            message: ${{ toJson('cloc.json')[1].code }}
             message-color: blue
