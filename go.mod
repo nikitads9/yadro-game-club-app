@@ -1,3 +1,3 @@
 module github.com/nikitads9/yadro-game-club-app
 
-go 1.22.2
+go 1.19

@@ -1,15 +1,21 @@
+include .env
 BIN_APP := "./bin/events"
-.PHONY: build
-build: build-server build-client
 
-build-server:
-	go build -v -ldflags "-w -s" -o $(BIN_APP) ./cmd/events/events.go
+.PHONY: build
+build: 
+	CGO_ENABLED=0 GOOS=linux go build -v -ldflags "-w -s" -o $(BIN_APP) ./cmd/events/events.go
 
 .PHONY: run
-run: env docker-compose-up
-docker-compose-up:
-	docker-compose up -d
+run: docker-build docker-run
+docker-build:
+	docker build --no-cache -f ./deploy/Dockerfile . --tag nikitads9/yadro-game-club:app
+docker-run:
+	set -o allexport && source ./.env && set +o allexport
+	docker run -d -e DATA_PATH=${DATA_PATH} -v ${PWD}/testdata/:/testdata/ --name app nikitads9/yadro-game-club:app
 
-.PHONY: stop
-stop:
-	docker compose stop
+.PHONY: wipe
+wipe: docker-remove docker-delete
+docker-remove:
+	docker container rm app
+docker-delete:
+	docker image rm nikitads9/yadro-game-club:app
