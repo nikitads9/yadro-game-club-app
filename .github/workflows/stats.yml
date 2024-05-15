@@ -23,7 +23,7 @@ jobs:
           with:
             options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --report-file="$GITHUB_ENV" --no-autogen .
         - name: Check output
-          run: echo ${{ toJson(steps.cloc.outputs)}}
+          run: echo toJson(steps.cloc.outputs)
         - name: Write Badge
           uses: action-badges/core@0.3.0
           with:
