@@ -21,7 +21,7 @@ jobs:
           id: cloc
           uses: djdefi/cloc-action@6
           with:
-            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --json --no-autogen . >> $GITHUB_OUTPUT
+            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out="$GITHUB_OUTPUT" --no-autogen . 
 
         - name: Check
           run: echo ${{ toJson(steps.cloc.outputs) }}
