@@ -32,13 +32,19 @@ var (
 	price       int64
 	openingTime time.Time
 	closingTime time.Time
-	Queue       = []string{}
-	Queuers     = map[string]struct{}{}
-	Players     = map[string]*int{}
-	Customers   = map[string]struct{}{}
-	Computers   = map[int]*computer{}
+	// Очередь клиентов
+	Queue = []string{}
+	// Отображение для быстрого (константного) доступа к клиентам в очереди
+	Queuers = map[string]struct{}{}
+	// Отображение для быстрого (константного) доступа к клиентам за компьютерами
+	Players = map[string]*int{}
+	// Отображение для быстрого (константного) доступа к клиентам, вошедшим в клуб
+	Customers = map[string]struct{}{}
+	// Отображение для быстрого (константного) доступа к столам с компьютерами
+	Computers = map[int]*computer{}
 )
 
+// ReadLogs читает события из файла с помощью bufio и вызывает функцию по их обработке. В конце своей работы она выводит статистику по столам.
 func ReadLogs(file *os.File) {
 	scanner := bufio.NewScanner(file)
 
