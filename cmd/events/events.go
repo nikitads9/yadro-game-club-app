@@ -42,7 +42,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&path, "path", "./testdata/test.txt", "путь к файлу с исходными данными по итогам дня")
+	flag.StringVar(&path, "path", "C:\\Users\\swnik\\Desktop\\projects\\yadro-game-club-app\\testdata\\test.txt", "путь к файлу с исходными данными по итогам дня")
 }
 
 func main() {
@@ -147,7 +147,7 @@ func main() {
 		Computers[*val].SessionEnd, Computers[*val].Occupied = closingTime, false
 		Computers[*val].Revenue += calculateRevenue(Computers[*val])
 		Computers[*val].UseTime += closingTime.Sub(Computers[*val].SessionStart)
-		Event11(closingTime, key)
+		Event(closingTime, 11, key)
 	}
 
 	// Выводим время закрытия
@@ -165,14 +165,14 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 	case "1":
 		// если клиент пришел вне часов работы
 		if moment.Before(openingTime) || moment.After(closingTime) {
-			Event13(moment, "NotOpenYet")
+			Event(moment, 13, "NotOpenYet")
 			return
 		}
 
 		// нельзя войти в одну реку дважды
 		_, entered := Customers[client]
 		if entered {
-			Event13(moment, "YouShallNotPass")
+			Event(moment, 13, "YouShallNotPass")
 			return
 		}
 
@@ -187,7 +187,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 
 		// если компьютер уже занят
 		if Computers[computerID[0]].Client != "" {
-			Event13(moment, "PlaceIsBusy")
+			Event(moment, 13, "PlaceIsBusy")
 			return
 		}
 
@@ -197,7 +197,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 		// если клиент не входил
 		_, entered := Customers[client]
 		if !entered {
-			Event13(moment, "ClientUnknown")
+			Event(moment, 13, "ClientUnknown")
 			return
 		}
 
@@ -216,7 +216,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 		if waiting {
 			delete(Queuers, client)
 			Queue = Queue[1:]
-			Event12(moment, client, computerID[0])
+			Event(moment, 12, client, computerID[0])
 		}
 		Computers[computerID[0]].Client = client
 		Computers[computerID[0]].SessionStart, Computers[computerID[0]].Occupied = moment, true
@@ -226,7 +226,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 	case "3":
 		// если очередь превысила количество столов
 		if len(Queuers) > len(Computers) {
-			Event11(moment, client)
+			Event(moment, 11, client)
 			return
 		}
 
@@ -238,7 +238,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 			}
 		}
 		if vacant {
-			Event13(moment, "ICanWaitNoLonger!")
+			Event(moment, 13, "ICanWaitNoLonger!")
 			return
 		}
 
@@ -250,7 +250,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 		// если клиент ушел не заходя
 		_, entered := Customers[client]
 		if !entered {
-			Event13(moment, "ClientUnknown")
+			Event(moment, 13, "ClientUnknown")
 			return
 		}
 
@@ -263,7 +263,7 @@ func parseInboundEvents(line string, moment time.Time, eventID string, client st
 			Computers[*Players[client]].SessionEnd, Computers[*Players[client]].Occupied = moment, false
 			Computers[*Players[client]].UseTime += moment.Sub(Computers[*Players[client]].SessionStart)
 			Computers[*Players[client]].Revenue = calculateRevenue(Computers[*Players[client]])
-			Event12(moment, Queue[0], *Players[client])
+			Event(moment, 12, Queue[0], *Players[client])
 			//начинается сеанс первого игрока из очереди
 			Computers[*Players[client]].SessionStart, Computers[*Players[client]].Occupied = moment, true
 			// ушедший удаляется из списка активных клиентов, покинувший очередь удаляется из очереди
@@ -288,20 +288,8 @@ func calculateRevenue(pc *computer) int64 {
 }
 
 // TODO: попробовать единую функцию для исходящих событий с вариадическими аргументами
-
-// Event11 Клиент ушел
-func Event11(moment time.Time, client string) {
-	fmt.Printf("%v 11 %s\n", moment.Format("15:04"), client)
-}
-
-// Event12 Клиент сел за стол
-func Event12(moment time.Time, client string, computerID int) {
-	fmt.Printf("%v 12 %s %d\n", moment.Format("15:04"), client, computerID)
-}
-
-// Event13 Ошибка
-func Event13(moment time.Time, err string) {
-	fmt.Printf("%v 13 %s\n", moment.Format("15:04"), err)
+func Event(moment time.Time, eventID int, message ...any) {
+	fmt.Printf("%s %d %v\n", moment.Format("15:04"), eventID, strings.Trim(fmt.Sprintf("%v", message), "[]"))
 }
 
 // fmtDuration ЫФункция форматирования длительности сеанса
