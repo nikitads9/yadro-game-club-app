@@ -31,5 +31,5 @@ jobs:
             github-token: "${{ secrets.GITHUB_TOKEN }}"
             badge-branch: badges
             label: code lines
-            message: ${{ steps.cloc.outputs)[1].code }}
+            message: ${{ toJson(steps.cloc.outputs)[1].code }}
             message-color: blue
