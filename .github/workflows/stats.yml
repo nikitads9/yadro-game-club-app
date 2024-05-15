@@ -21,7 +21,7 @@ jobs:
           id: cloc
           uses: djdefi/cloc-action@6
           with:
-            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --json --no-autogen .
+            options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --report-file="$GITHUB_ENV" --no-autogen .
         - name: Write Badge
           uses: action-badges/core@0.3.0
           with:
