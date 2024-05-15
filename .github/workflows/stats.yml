@@ -29,5 +29,5 @@ jobs:
             github-token: "${{ secrets.GITHUB_TOKEN }}"
             badge-branch: badges
             label: code lines
-            message: ${{ (env.$GITHUB_ENVtoJson)[0].code }}
+            message: ${{ toJson(env.$GITHUB_ENV)[1].code }}
             message-color: blue
