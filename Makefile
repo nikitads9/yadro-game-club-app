@@ -5,6 +5,10 @@ BIN_APP := "./bin/events"
 build: 
 	CGO_ENABLED=0 GOOS=linux go build -v -ldflags "-w -s" -o $(BIN_APP) ./cmd/events/events.go
 
+.PHONY: build-win
+build-win: 
+	CGO_ENABLED=0 GOOS=windows go build -v -ldflags "-w -s" -o $(BIN_APP).exe ./cmd/events/events.go
+
 .PHONY: run
 run: docker-build docker-run
 docker-build:
