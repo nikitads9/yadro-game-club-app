@@ -24,7 +24,7 @@ jobs:
             options: ${{ env.workspace }} --exclude-dir=docs,LICENSE,testdata --exclude-ext=md --out=cloc.json --no-autogen . 
 
         - name: Check
-          run: echo grep -m 1 -E  'Go' cloc.json | grep -Eo '[0-9]+$'
+          run: grep -m 1 -E  'Go' cloc.json | grep -Eo '[0-9]+$'
         - name: Write Badge
           uses: action-badges/core@0.3.0
           with:
